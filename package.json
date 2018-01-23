@@ -1,0 +1,7 @@
+{
+  "name": "mobile-analytics-poc",
+  "version": "1.0.0",
+  "dependencies": {
+    "seed-random": "^2.2.0"
+  }
+}
