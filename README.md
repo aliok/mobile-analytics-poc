@@ -8,7 +8,12 @@ docker-compose up
 2. Generate CURL statements to feed ElasticSearch
 ```
 npm install
-node generateCurl.js | bash
+node generateCurl.js
+```
+
+In order to avoid all output:
+```
+node generateCurl.js | bash 2>&1 > /dev/null
 ```
 
 3. Copy the CURL statements and execute them.
