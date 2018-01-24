@@ -11,6 +11,11 @@ npm install
 node generateCurl.js
 ```
 
+In order to avoid all output:
+```
+node generateCurl.js | bash 2>&1 > /dev/null
+```
+
 3. Copy the CURL statements and execute them.
 
 You will have the indices and data created in ElasticSearch.
@@ -48,9 +53,9 @@ Some data is historical. So, make sure you select a wider date range (top right 
 
 There are 3 document types:
 
-- default-metrics/sdkVersionForClient: Basically a <clientId, sdkVersion> map. 
-- default-event-metrics/initSDK: Init sdk events are streamed to here. 
-- custom-button-metrics: Some custom metrics are streamed to here.   
+- default-metrics/sdkVersionForClient: Basically a <clientId, sdkVersion> map.
+- default-event-metrics/initSDK: Init sdk events are streamed to here.
+- custom-button-metrics: Some custom metrics are streamed to here.
 
 
 Note that "default-metrics/sdkVersionForClient" is non-time-series data.
@@ -61,7 +66,7 @@ However, we also have a timestamp there. This is something extra that can be use
 
 ### Data generated
 
-`generateCurl.js` is basically a simulation of an application that mobile apps can talk to.
+`generateElasticCurl.js` is basically a simulation of an application that mobile apps can talk to.
 
 Instead of mobile apps pushing stuff, this script generates events and then processes them.
 
@@ -69,8 +74,6 @@ Basically we have 2 parts:
 
 1. Event generation: Events generated are partially random and partially static. Assume they came from mobile apps.
 
-2. Processing of the events: In this part, the code processes the events and creates documents. Well, actually 
+2. Processing of the events: In this part, the code processes the events and creates documents. Well, actually
    instead of doing real integration with ElasticSearch, I chose to generate CURL statements.
-   This way requires an additional copy-paste operation but it is simpler. 
-
- 
+   This way requires an additional copy-paste operation but it is simpler.
