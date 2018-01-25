@@ -2,50 +2,48 @@
 1. Start ElasticSearch + Kibana
 
 ```
-docker-compose up -f elastic-search-kibana-docker-compose.yml
+docker-compose -f elastic-search-kibana-docker-compose.yml up
 ```
 
-2. Generate CURL statements to feed ElasticSearch
+2. Create fixed data OR create continous event stream
 ```
 npm install
-node generateCurl.js
+
+node elasticSearchFixedData.js 
+# OR
+node elasticSearchEventStreams.js
+
 ```
 
-In order to avoid all output:
+3. Import Kibana objects.
+
 ```
-node generateCurl.js | bash 2>&1 > /dev/null
+curl -XPOST localhost:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./kibana-dashboard-export.json
 ```
 
-3. Copy the CURL statements and execute them.
 
-You will have the indices and data created in ElasticSearch.
-
-
-4. Configure Kibana.
-
-Go to http://localhost:5601/app/kibana#/management/kibana/indices
-
-Create 3 index patterns:
-
-- default-metrics*
-- default-event-metrics*
-- custom-button-metrics*
-
-Make sure you select "timestamp" field as the "Time Filter field name".
-
-
-5. Import objects.
-
-Go to http://localhost:5601/app/kibana#/management/kibana/objects
-
-Import the file "export.json".
-
-6. Enjoy
+4. Enjoy
 
 Go to http://localhost:5601/app/kibana#/visualize and pick stuff.
 
 Some data is historical. So, make sure you select a wider date range (top right corner) if you see nothing.
 
+
+---------------------------------------------
+
+### Notes
+
+##### Resetting everything
+
+```
+docker-compose -f elastic-search-kibana-docker-compose.yml up
+```
+
+##### Exporting Kibana Dashboard (how kibana-dashboard-export.json was created)
+
+```
+curl -XGET localhost:5601/api/kibana/dashboards/export?dashboard=50eaf280-01c5-11e8-b885-6707ea41b5e2 > kibana-dashboard-export.json
+```
 
 ---------------------------------------------
 
@@ -66,14 +64,6 @@ However, we also have a timestamp there. This is something extra that can be use
 
 ### Data generated
 
-`generateElasticCurl.js` is basically a simulation of an application that mobile apps can talk to.
-
-Instead of mobile apps pushing stuff, this script generates events and then processes them.
+`fixtures.js` is basically a simulation events coming from mobile apps. Instead of mobile apps pushing stuff, this script generates events.
 
 Basically we have 2 parts:
-
-1. Event generation (fixtures.js): Events generated are partially random and partially static. Assume they came from mobile apps.
-
-2. Processing of the events (generateElasticCurl.js): In this part, the code processes the events and creates documents. Well, actually
-   instead of doing real integration with ElasticSearch, I chose to generate CURL statements.
-   This way requires an additional copy-paste operation but it is simpler.
