@@ -72,8 +72,8 @@ Instead of mobile apps pushing stuff, this script generates events and then proc
 
 Basically we have 2 parts:
 
-1. Event generation: Events generated are partially random and partially static. Assume they came from mobile apps.
+1. Event generation (fixtures.js): Events generated are partially random and partially static. Assume they came from mobile apps.
 
-2. Processing of the events: In this part, the code processes the events and creates documents. Well, actually
+2. Processing of the events (generateElasticCurl.js): In this part, the code processes the events and creates documents. Well, actually
    instead of doing real integration with ElasticSearch, I chose to generate CURL statements.
    This way requires an additional copy-paste operation but it is simpler.
