@@ -15,31 +15,35 @@ node elasticSearchEventStreams.js
 
 ```
 
-3. Configure Kibana.
+3. Import Kibana objects.
 
-Go to http://localhost:5601/app/kibana#/management/kibana/indices
-
-Create 3 index patterns:
-
-- default-metrics*
-- default-event-metrics*
-- custom-button-metrics*
-
-Make sure you select "timestamp" field as the "Time Filter field name".
+```
+curl -XPOST localhost:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./kibana-dashboard-export.json
+```
 
 
-4. Import Kibana objects.
-
-Go to http://localhost:5601/app/kibana#/management/kibana/objects
-
-Import the file "export.json".
-
-5. Enjoy
+4. Enjoy
 
 Go to http://localhost:5601/app/kibana#/visualize and pick stuff.
 
 Some data is historical. So, make sure you select a wider date range (top right corner) if you see nothing.
 
+
+---------------------------------------------
+
+### Notes
+
+##### Resetting everything
+
+```
+docker-compose -f elastic-search-kibana-docker-compose.yml up
+```
+
+##### Exporting Kibana Dashboard (how kibana-dashboard-export.json was created)
+
+```
+curl -XGET localhost:5601/api/kibana/dashboards/export?dashboard=50eaf280-01c5-11e8-b885-6707ea41b5e2 > kibana-dashboard-export.json
+```
 
 ---------------------------------------------
 
