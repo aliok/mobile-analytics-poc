@@ -36,6 +36,7 @@ Some data is historical. So, make sure you select a wider date range (top right 
 ##### Resetting everything
 
 ```
+docker-compose -f elastic-search-kibana-docker-compose.yml rm
 docker-compose -f elastic-search-kibana-docker-compose.yml up
 ```
 
