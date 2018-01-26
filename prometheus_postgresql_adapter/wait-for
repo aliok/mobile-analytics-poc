@@ -1,0 +1,16 @@
+#!/bin/sh
+
+N=10
+
+wait_for() {
+  echo "Gonna wait for $N seconds and then execute $@"
+  for i in `seq $N` ; do
+    echo "Waiting ... $i"
+    sleep 1
+  done
+  echo "Gonna execute $@"
+  exec "$@"
+  exit 1
+}
+
+wait_for "$@"
