@@ -66,4 +66,12 @@ However, we also have a timestamp there. This is something extra that can be use
 
 `fixtures.js` is basically a simulation events coming from mobile apps. Instead of mobile apps pushing stuff, this script generates events.
 
-Basically we have 2 parts:
+
+----------------------------------------------
+
+### Screenshots
+
+![Screenshot0](/screenshots/es-00-overview.png?raw=true "Screenshot")
+![Screenshot1](/screenshots/es-01-numberOfClientsPerSDKVersion.png?raw=true "Screenshot")
+![Screenshot2](/screenshots/es-02-sdkInitCountsPerVersion.png?raw=true "Screenshot")
+![Screenshot3](/screenshots/es-03-customMetrics.png?raw=true "Screenshot")
