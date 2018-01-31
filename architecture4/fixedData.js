@@ -1,44 +1,41 @@
 #!/usr/bin/env node
 const Promise = require('bluebird');
 
-const fixtures = require('./fixtures');
-const elasticSearchCommons = require('./elasticSearchCommons');
+const fixtures = require('../fixtures');
+const promClient = require('prom-client');
 const {fixedButtonMetrics, fixedSdkInitEvents} = fixtures;
 
 const LOG_EVERY_Nth_EVENT = 10;
 
 const CONCURRENCY = 20;
 
+let gateway = new promClient.Pushgateway('http://127.0.0.1:9091');
+
+const sdkInitCounter = new promClient.Counter({ name: 'sdkInit02', help: 'help', labelNames: ['clientId', 'version'] });
+const buttonMetricsCounter = new promClient.Counter({ name: 'buttonMetrics02', help: 'help', labelNames: ['clientId', 'button'] });
+
 Promise.resolve()
-    .then(function () {
-        return elasticSearchCommons.connect()
-    })
-    .catch(function (error) {
-        console.trace('elasticsearch cluster is down! exiting');
-        console.trace(error.message);
-        // this will kill everything, including the promise chain
-        process.exit(-1);
-    })
-    .then(elasticSearchCommons.deleteIndices)
-    .then(elasticSearchCommons.createIndices)
     .then(processSdkInitEvents)
     .then(processButtonMetrics)
-    .catch(function (err) {
-        console.trace("WTF?");
-        console.trace(err);
+    .then(function(){
+        gateway.pushAdd({ jobName: 'gateway' }, function(err, resp, body) {
+            if(err){
+                console.error("Unable to push data to gateway!");
+                console.error(err, resp, body);
+            }
+        });
     });
-
 
 function processSdkInitEvents() {
     console.log("Starting listening processing sdk init events");
 
-    Promise
+    return Promise
         .map(fixedSdkInitEvents, function (sdkInitEvent, index) {
             if (index % LOG_EVERY_Nth_EVENT === 1) {
                 console.log(`Processing sdkInitEvent #${index}`);
             }
 
-            return elasticSearchCommons.processSDKInitEvent(sdkInitEvent);
+            return sdkInitCounter.inc({clientId: sdkInitEvent.clientId, version: sdkInitEvent.sdkVersion});
         }, {concurrency: CONCURRENCY})
         .then(function () {
             console.log("All sdk init events are processed");
@@ -48,13 +45,13 @@ function processSdkInitEvents() {
 function processButtonMetrics() {
     console.log("Starting listening processing button metrics");
 
-    Promise
+    return Promise
         .map(fixedButtonMetrics, function (buttonMetric, index) {
             if (index % LOG_EVERY_Nth_EVENT === 1) {
                 console.log(`Processing buttonMetrics #${index}`);
             }
 
-            return elasticSearchCommons.processButtonMetrics(buttonMetric);
+            return buttonMetricsCounter.inc({clientId: buttonMetric.clientId, version: buttonMetric.button});
         }, {concurrency: CONCURRENCY})
         .then(function () {
             console.log("All button metrics are processed");

@@ -1,6 +1,8 @@
-const seed = require('seed-random');
+// CANCELLED IDEA
+// const seed = require('seed-random');
+// const random = seed("hello");       // fixed seed to get the same data every time
 
-const random = seed("hello");       // fixed seed to get the same data every time
+const random = Math.random;
 
 const CLIENT_IDS = ["aaaaa", "bbbbb", "ccccc", "ddddd", "eeeee"];
 const SDK_VERSIONS = ["0.0.1", "1.0.0", "2.0.0", "3.0.0"];

@@ -19,7 +19,7 @@ module.exports = {
 };
 
 function connect() {
-    Promise.resolve()
+    return Promise.resolve()
         .then(function () {
             return client.ping({
                 requestTimeout: 3000
@@ -49,7 +49,7 @@ function createIndices() {
     console.log("Creating indices");
     return Promise.resolve()
         .then(function () {
-            createIndex("default-metrics", {
+            return createIndex("default-metrics", {
                 "mappings": {
                     "sdkVersionForClient": {
                         "properties": {
@@ -60,7 +60,7 @@ function createIndices() {
             })
         })
         .then(function () {
-            createIndex("default-event-metrics", {
+            return createIndex("default-event-metrics", {
                 "mappings": {
                     "initSDK": {
                         "properties": {
@@ -71,7 +71,7 @@ function createIndices() {
             })
         })
         .then(function () {
-            createIndex("custom-button-metrics", {
+            return createIndex("custom-button-metrics", {
                 "mappings": {
                     "buttonClick": {
                         "properties": {

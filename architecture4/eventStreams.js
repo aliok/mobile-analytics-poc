@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const Promise = require('bluebird');
 
-const fixtures = require('./fixtures');
+const fixtures = require('../fixtures');
 const promClient = require('prom-client');
 const {sdkInitEventStream, buttonMetricsStream} = fixtures;
 
@@ -53,6 +53,11 @@ function startPushingToGateway() {
     console.log("Starting pushing to gateway");
     setInterval(function () {
         console.log("Pushing to gateway");
-        gateway.pushAdd({jobName: 'gateway'}, function (err, resp, body) {});
+        gateway.pushAdd({jobName: 'gateway'}, function (err, resp, body) {
+            if(err){
+                console.error("Unable to push data to gateway!");
+                console.error(err, resp, body);
+            }
+        });
     }, 3000);
 }

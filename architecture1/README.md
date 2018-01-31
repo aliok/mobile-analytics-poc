@@ -2,31 +2,37 @@
 1. Start ElasticSearch + Kibana
 
 ```
-docker-compose -f elastic-search-kibana-docker-compose.yml up
+cd architecture1
+docker-compose -f docker-compose.yml up
 ```
 
-2. Create fixed data OR create continous event stream
+2. Create fixed data OR create continuous event stream
 ```
+cd architecture1
+nvm use
 npm install
 
-node elasticSearchFixedData.js 
+node fixedData.js 
 # OR
-node elasticSearchEventStreams.js
+node eventStreams.js
 
 ```
 
 3. Import Kibana objects.
 
 ```
+cd architecture1
 curl -XPOST localhost:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./kibana-dashboard-export.json
 ```
 
 
 4. Enjoy
 
-Go to http://localhost:5601/app/kibana#/visualize and pick stuff.
+Go to <http://localhost:5601/app/kibana#/visualize> and pick stuff.
 
-Some data is historical. So, make sure you select a wider date range (top right corner) if you see nothing.
+If you see a warning like "No default index", go to one of the indices and press the star button to mark it as default.
+
+If you used "fixedData.js", data is historical. Make sure you select a wider date range (top right corner) if you see nothing.
 
 
 ---------------------------------------------
@@ -36,8 +42,8 @@ Some data is historical. So, make sure you select a wider date range (top right 
 ##### Resetting everything
 
 ```
-docker-compose -f elastic-search-kibana-docker-compose.yml rm
-docker-compose -f elastic-search-kibana-docker-compose.yml up
+docker-compose -f docker-compose.yml rm
+docker-compose -f docker-compose.yml up
 ```
 
 ##### Exporting Kibana Dashboard (how kibana-dashboard-export.json was created)
@@ -72,7 +78,7 @@ However, we also have a timestamp there. This is something extra that can be use
 
 ### Screenshots
 
-![Screenshot0](/screenshots/es-00-overview.png?raw=true "Screenshot")
-![Screenshot1](/screenshots/es-01-numberOfClientsPerSDKVersion.png?raw=true "Screenshot")
-![Screenshot2](/screenshots/es-02-sdkInitCountsPerVersion.png?raw=true "Screenshot")
-![Screenshot3](/screenshots/es-03-customMetrics.png?raw=true "Screenshot")
+![Screenshot0](./screenshots/es-00-overview.png?raw=true "Screenshot")
+![Screenshot1](./screenshots/es-01-numberOfClientsPerSDKVersion.png?raw=true "Screenshot")
+![Screenshot2](./screenshots/es-02-sdkInitCountsPerVersion.png?raw=true "Screenshot")
+![Screenshot3](./screenshots/es-03-customMetrics.png?raw=true "Screenshot")

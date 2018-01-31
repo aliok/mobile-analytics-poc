@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const Promise = require('bluebird');
 
-const fixtures = require('./fixtures');
+const fixtures = require('../fixtures');
 const elasticSearchCommons = require('./elasticSearchCommons');
 const {sdkInitEventStream, buttonMetricsStream} = fixtures;
 
