@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "dependencies": {
     "bluebird": "^3.5.1",
-    "elasticsearch": "^14.0.0",
-    "seed-random": "^2.2.0"
+    "prom-client": "^10.2.2"
   }
 }

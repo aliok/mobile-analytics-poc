@@ -1,0 +1,34 @@
+version: '2'
+services:
+    pg_prometheus:                                   # this is Postgres + TimeScaleDB + PostgresPrometheusExtension
+        image: timescale/pg_prometheus:latest
+        volumes:
+          - ./prometheus.yml:/etc/prometheus/prometheus.yml
+        ports:
+          - 5432:5432
+        command: -csynchronous_commit=off
+    prometheus_postgresql_adapter:
+        build: ./prometheus_postgresql_adapter
+        ports:
+          - 9201:9201
+        command: ["/wait-for", "/prometheus-postgresql-adapter", "-pg-host=pg_prometheus", "-pg-prometheus-log-samples"]
+        depends_on: ['pg_prometheus']
+    prometheus:
+        image: prom/prometheus:latest
+        volumes:
+          - ./prometheus.yml:/etc/prometheus/prometheus.yml
+        ports:
+          - 9090:9090
+        depends_on: ['pg_prometheus', 'prometheus_postgresql_adapter']
+    prometheus_push_gateway:
+        image: prom/pushgateway
+        ports:
+          - 9091:9091
+        depends_on: ['prometheus']
+    grafana:
+        image: grafana/grafana:latest
+        environment:
+           GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel
+        ports:
+          - 3000:3000
+        depends_on: ['pg_prometheus', 'prometheus']

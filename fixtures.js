@@ -1,12 +1,14 @@
-const seed = require('seed-random');
+// CANCELLED IDEA
+// const seed = require('seed-random');
+// const random = seed("hello");       // fixed seed to get the same data every time
 
-const random = seed("hello");       // fixed seed to get the same data every time
+const random = Math.random;
 
 const CLIENT_IDS = ["aaaaa", "bbbbb", "ccccc", "ddddd", "eeeee"];
 const SDK_VERSIONS = ["0.0.1", "1.0.0", "2.0.0", "3.0.0"];
 const BUTTON_COUNT = 3;
-const SDK_INIT_EVENT_STREAM_FREQUENCY = 5000;   // e.g. every 5 seconds means 60*60*24/5 = 17K app inits per day
-const BUTTON_METRICS_STREAM_FREQUENCY = 2000;   // e.g. every 2 seconds means 60*60*24/2 = 43K events per day
+const SDK_INIT_EVENT_STREAM_FREQUENCY = 50;   // e.g. every 5 seconds means 60*60*24/5 = 17K app inits per day
+const BUTTON_METRICS_STREAM_FREQUENCY = 10;   // e.g. every 2 seconds means 60*60*24/2 = 43K events per day
 const DAY = 60 * 60 * 24 * 1000;
 
 

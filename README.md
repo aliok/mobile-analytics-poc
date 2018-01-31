@@ -1,3 +1,5 @@
 This project experiments with different databases and viz tools.
 
-[ElasticSearch](README-elasticSearch.md)
+[Architecture1](architecture1/README.md)
+
+[architecture4](architecture4/README.md)
