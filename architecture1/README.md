@@ -1,3 +1,9 @@
+# Overview
+
+![Overview](./screenshots/architecture1-overview.png?raw=true "Overview")
+
+
+### Instructions
 
 1. Start ElasticSearch + Kibana
 

@@ -3,6 +3,7 @@ const Promise = require('bluebird');
 
 const fixtures = require('../fixtures');
 const promClient = require('prom-client');
+const dbCommons = require('./dbCommons');
 const {sdkInitEventStream, buttonMetricsStream} = fixtures;
 
 const LOG_EVERY_Nth_EVENT = 10;
@@ -16,6 +17,8 @@ const sdkInitCounter = new promClient.Counter({name: 'sdkInitStream01', help: 'h
 const buttonMetricsCounter = new promClient.Counter({name: 'buttonMetricsStream01', help: 'help', labelNames: ['clientId', 'button']});
 
 Promise.resolve()
+    .then(dbCommons.ping)
+    .then(dbCommons.createSdkVersionForClientTable)
     .then(startListeningSDKInitEventStream)
     .then(startListeningButtonMetricsStream)
     .then(startPushingToGateway)
@@ -32,7 +35,14 @@ function startListeningSDKInitEventStream() {
         if (sdkInitEventCount % LOG_EVERY_Nth_EVENT === 1) {
             console.log(`Processing sdkInitEvent #${sdkInitEventCount}`);
         }
-        return sdkInitCounter.inc({clientId: sdkInitEvent.clientId, version: sdkInitEvent.sdkVersion});
+
+        return Promise.resolve()
+            .then(function () {
+                return dbCommons.processSDKInitEvent(sdkInitEvent);
+            })
+            .then(function () {
+                return sdkInitCounter.inc({clientId: sdkInitEvent.clientId, version: sdkInitEvent.sdkVersion});
+            });
     });
     return Promise.resolve();
 }
@@ -54,7 +64,7 @@ function startPushingToGateway() {
     setInterval(function () {
         console.log("Pushing to gateway");
         gateway.pushAdd({jobName: 'gateway'}, function (err, resp, body) {
-            if(err){
+            if (err) {
                 console.error("Unable to push data to gateway!");
                 console.error(err, resp, body);
             }
