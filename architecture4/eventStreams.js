@@ -6,7 +6,7 @@ const promClient = require('prom-client');
 const dbCommons = require('./dbCommons');
 const {sdkInitEventStream, buttonMetricsStream} = fixtures;
 
-const LOG_EVERY_Nth_EVENT = 10;
+const LOG_EVERY_Nth_EVENT = 1000;
 
 let sdkInitEventCount = 0;      // for logging purposes only
 let buttonMetricsCount = 0;     // for logging purposes only

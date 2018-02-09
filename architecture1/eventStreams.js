@@ -5,7 +5,7 @@ const fixtures = require('../fixtures');
 const elasticSearchCommons = require('./elasticSearchCommons');
 const {sdkInitEventStream, buttonMetricsStream} = fixtures;
 
-const LOG_EVERY_Nth_EVENT = 10;
+const LOG_EVERY_Nth_EVENT = 100;
 
 let sdkInitEventCount = 0;
 let buttonMetricsCount = 0;

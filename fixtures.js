@@ -4,11 +4,37 @@
 
 const random = Math.random;
 
-const CLIENT_IDS = ["aaaaa", "bbbbb", "ccccc", "ddddd", "eeeee"];
-const SDK_VERSIONS = ["0.0.1", "1.0.0", "2.0.0", "3.0.0"];
-const BUTTON_COUNT = 3;
-const SDK_INIT_EVENT_STREAM_FREQUENCY = 50;   // e.g. every 5 seconds means 60*60*24/5 = 17K app inits per day
-const BUTTON_METRICS_STREAM_FREQUENCY = 10;   // e.g. every 2 seconds means 60*60*24/2 = 43K events per day
+const CLIENT_IDS = [
+    "aaaaa01", "bbbbb01", "ccccc01", "ddddd01", "eeeee01",
+    "aaaaa02", "bbbbb02", "ccccc02", "ddddd02", "eeeee02",
+    "aaaaa03", "bbbbb03", "ccccc03", "ddddd03", "eeeee03",
+    "aaaaa04", "bbbbb04", "ccccc04", "ddddd04", "eeeee04",
+    "aaaaa05", "bbbbb05", "ccccc05", "ddddd05", "eeeee05",
+    "aaaaa06", "bbbbb06", "ccccc06", "ddddd06", "eeeee06",
+    "aaaaa07", "bbbbb07", "ccccc07", "ddddd07", "eeeee07",
+    "aaaaa08", "bbbbb08", "ccccc08", "ddddd08", "eeeee08",
+    "aaaaa09", "bbbbb09", "ccccc09", "ddddd09", "eeeee09",
+    "aaaaa10", "bbbbb10", "ccccc10", "ddddd10", "eeeee10",
+    "aaaaa11", "bbbbb11", "ccccc11", "ddddd11", "eeeee11",
+    "aaaaa12", "bbbbb12", "ccccc12", "ddddd12", "eeeee12",
+    "aaaaa13", "bbbbb13", "ccccc13", "ddddd13", "eeeee13",
+    "aaaaa14", "bbbbb14", "ccccc14", "ddddd14", "eeeee14",
+    "aaaaa15", "bbbbb15", "ccccc15", "ddddd15", "eeeee15",
+    "aaaaa16", "bbbbb16", "ccccc16", "ddddd16", "eeeee16",
+    "aaaaa17", "bbbbb17", "ccccc17", "ddddd17", "eeeee17",
+];
+const SDK_VERSIONS = [
+    "0.0.1.1", "1.0.0.1", "2.0.0.1", "3.0.0.1",
+    "0.0.1.2", "1.0.0.2", "2.0.0.2", "3.0.0.2",
+    "0.0.1.3", "1.0.0.3", "2.0.0.3", "3.0.0.3",
+    "0.0.1.4", "1.0.0.4", "2.0.0.4", "3.0.0.4",
+    "0.0.1.5", "1.0.0.5", "2.0.0.5", "3.0.0.5",
+    "0.0.1.6", "1.0.0.6", "2.0.0.6", "3.0.0.6",
+
+];
+const BUTTON_COUNT = 1000;
+const SDK_INIT_EVENT_STREAM_FREQUENCY = 500;   // e.g. every 5 seconds means 60*60*24/5 = 17K app inits per day
+const BUTTON_METRICS_STREAM_FREQUENCY = 100;   // e.g. every 2 seconds means 60*60*24/2 = 43K events per day
 const DAY = 60 * 60 * 24 * 1000;
 
 
