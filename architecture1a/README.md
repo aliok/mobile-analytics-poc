@@ -1,6 +1,6 @@
 # Overview
 
-![Overview](./screenshots/architecture1-overview.png?raw=true "Overview")
+![Overview](./screenshots/architecture1a-overview.png?raw=true "Overview")
 
 
 ### Instructions
@@ -8,13 +8,13 @@
 1. Start ElasticSearch + Kibana
 
 ```
-cd architecture1
+cd architecture1a
 docker-compose -f docker-compose.yml up
 ```
 
 2. Create fixed data OR create continuous event stream
 ```
-cd architecture1
+cd architecture1a
 nvm use
 npm install
 
@@ -27,7 +27,7 @@ node eventStreams.js
 3. Import Kibana objects.
 
 ```
-cd architecture1
+cd architecture1a
 curl -XPOST localhost:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./kibana-dashboard-export.json
 ```
 

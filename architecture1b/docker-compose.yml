@@ -1,0 +1,14 @@
+version: '2'
+services:
+    timescaledb:                                   # this is Postgres + TimeScaleDB
+        image: timescale/timescaledb:latest
+        ports:
+          - 5432:5432
+        command: -csynchronous_commit=off
+    grafana:
+        image: grafana/grafana:latest
+        environment:
+           GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel
+        ports:
+          - 3000:3000
+        depends_on: ['timescaledb']
