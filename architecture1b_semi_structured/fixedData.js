@@ -11,8 +11,9 @@ const CONCURRENCY = 20;
 
 Promise.resolve()
     .then(dbCommons.ping)
-    .then(dbCommons.createSdkVersionForClientTable)
     .then(dbCommons.createMobileAppMetricsTable)
+    .then(dbCommons.createClientKnowledgeBaseView)
+    .then(dbCommons.createCustomMetricsTable)
     .then(processSdkInitEvents)
     .then(processButtonMetrics);
 

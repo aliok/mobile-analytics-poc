@@ -15,16 +15,6 @@ module.exports = {
             });
     },
 
-    createSdkVersionForClientTable: function () {
-        return db.none("CREATE TABLE IF NOT EXISTS sdkVersionForClient(clientId varchar(10) not null primary key, version varchar(40) not null, event_time timestamp with time zone)")
-            .then(function () {
-                console.log("Created sdkVersionForClient table or it already exists.")
-            })
-            .catch(function (err) {
-                console.error("Error created sdkVersionForClient table.", err);
-            })
-    },
-
     createMobileAppMetricsTable: function () {
         return db.none("CREATE TABLE IF NOT EXISTS mobileAppMetrics(clientId varchar(10) not null, event_time timestamp with time zone not null, data jsonb)")
             .then(function () {
@@ -35,36 +25,41 @@ module.exports = {
             })
     },
 
-    processSDKInitEvent: function (sdkInitEvent) {
-        const statement1 = `insert into sdkVersionForClient(clientId, version, event_time) values($1, $2, $3)
-        on conflict(clientId)
-        do update set version = $2, event_time = $3;`;
-
-        const statement2 = `insert into mobileAppMetrics(clientId, event_time, data) values($1, $2, $3)`;
-
-        const promise1 = db.none(statement1, [sdkInitEvent.clientId, sdkInitEvent.sdkVersion, new Date(sdkInitEvent.timestamp)])
+    createClientKnowledgeBaseView: function () {
+        return db.none("CREATE OR REPLACE VIEW clientKnowledgeBase as select entry.clientId, entry.event_time, entry.data from mobileAppMetrics entry inner join (select clientId, max(event_time) as latestEntryTime from mobileAppMetrics group by clientId) latestEntry on entry.clientId = latestEntry.clientId and entry.event_time = latestEntryTime;")
+            .then(function () {
+                console.log("Created clientKnowledgeBase view or it already exists.")
+            })
             .catch(function (err) {
-                console.error("Error upserting data to sdkVersionForClient table.", sdkInitEvent, err);
-            });
+                console.error("Error creating clientKnowledgeBase view.", err);
+            })
+    },
 
-        const promise2 = db.none(statement2, [sdkInitEvent.clientId, new Date(sdkInitEvent.timestamp), {sdkVersion: sdkInitEvent.sdkVersion}])
+    createCustomMetricsTable: function () {
+        return db.none("CREATE TABLE IF NOT EXISTS customMetrics(clientId varchar(10) not null, event_time timestamp with time zone not null, data jsonb)")
+            .then(function () {
+                console.log("Created customMetrics table or it already exists.")
+            })
+            .catch(function (err) {
+                console.error("Error creating customMetrics table.", err);
+            })
+    },
+
+    processSDKInitEvent: function (sdkInitEvent) {
+        const statement = `insert into mobileAppMetrics(clientId, event_time, data) values($1, $2, $3)`;
+
+        return db.none(statement, [sdkInitEvent.clientId, new Date(sdkInitEvent.timestamp), {sdkVersion: sdkInitEvent.sdkVersion}])
             .catch(function (err) {
                 console.error("Error inserting data to defaultMetrics table.", sdkInitEvent, err);
-            });
-
-        return Promise
-            .all([promise1, promise2])
-            .catch(function (err) {
-                console.error("Error inserting data to sdkVersionForClient table.", sdkInitEvent, err);
             });
     },
 
     processButtonMetrics: function (buttonMetrics) {
-        const statement = `insert into mobileAppMetrics(clientId, event_time, data) values($1, $2, $3)`;
+        const statement = `insert into customMetrics(clientId, event_time, data) values($1, $2, $3)`;
 
         return db.none(statement, [buttonMetrics.clientId, new Date(buttonMetrics.timestamp), {button: buttonMetrics.button}])
             .catch(function (err) {
-                console.error("Error inserting data to mobileAppMetrics table.", buttonMetrics, err);
+                console.error("Error inserting data to customMetrics table.", buttonMetrics, err);
             });
     }
 };

@@ -22,6 +22,120 @@
   "rows": [
     {
       "collapse": false,
+      "height": 250,
+      "panels": [
+        {
+          "aliasColors": {},
+          "cacheTimeout": null,
+          "combine": {
+            "label": "Others",
+            "threshold": 0
+          },
+          "datasource": "PostgreSQL",
+          "fontSize": "80%",
+          "format": "short",
+          "id": 4,
+          "interval": null,
+          "legend": {
+            "show": true,
+            "values": true
+          },
+          "legendType": "Under graph",
+          "links": [],
+          "maxDataPoints": 3,
+          "nullPointMode": "connected",
+          "pieType": "pie",
+          "span": 12,
+          "strokeWidth": 1,
+          "targets": [
+            {
+              "alias": "",
+              "expr": "SELECT \n  date_trunc('day', time) as time,\n  count(*)\nFROM sdkVersionForClient\n  WHERE $__timeFilter(time)\n  GROUP by time\n  ORDER by time;",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "rawSql": "SELECT\n  now() as time,\n  count(latestEntryInTimeRange.clientId),\n  (latestEntryInTimeRange.data->>'sdkVersion')::text as metric\nFROM (select entry.clientId, entry.event_time, entry.data from mobileAppMetrics entry inner join (select clientId, max(event_time) as latestEntryTime from mobileAppMetrics where $__timeFilter(event_time) group by clientId) latestEntry on entry.clientId = latestEntry.clientId and entry.event_time = latestEntryTime) latestEntryInTimeRange\n  GROUP by latestEntryInTimeRange.data->>'sdkVersion'\n  ORDER by latestEntryInTimeRange.data->>'sdkVersion';",
+              "refId": "A"
+            }
+          ],
+          "title": "SDK usage percent for users with last sdk init in time range",
+          "type": "grafana-piechart-panel",
+          "valueName": "current"
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 250,
+      "panels": [
+        {
+          "columns": [],
+          "datasource": "PostgreSQL",
+          "fontSize": "100%",
+          "id": 5,
+          "links": [],
+          "pageSize": null,
+          "scroll": true,
+          "showHeader": true,
+          "sort": {
+            "col": 0,
+            "desc": true
+          },
+          "span": 12,
+          "styles": [
+            {
+              "alias": "Time",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "date"
+            },
+            {
+              "alias": "",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "pattern": "/.*/",
+              "thresholds": [],
+              "type": "number",
+              "unit": "short"
+            }
+          ],
+          "targets": [
+            {
+              "alias": "",
+              "expr": "SELECT\n  version,\n  count(*)\nFROM sdkVersionForClient\n  GROUP by version\n  ORDER by version;",
+              "format": "table",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "rawSql": "SELECT\n  latestEntryInTimeRange.data->>'sdkVersion',\n  count(*)\nFROM (select entry.clientId, entry.event_time, entry.data from mobileAppMetrics entry inner join (select clientId, max(event_time) as latestEntryTime from mobileAppMetrics group by clientId) latestEntry on entry.clientId = latestEntry.clientId and entry.event_time = latestEntryTime) latestEntryInTimeRange\n  GROUP by latestEntryInTimeRange.data->>'sdkVersion'\n  ORDER by latestEntryInTimeRange.data->>'sdkVersion';",
+              "refId": "A"
+            }
+          ],
+          "title": "SDK client usage - no time range",
+          "transform": "table",
+          "type": "table"
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
       "height": 262,
       "panels": [
         {
@@ -113,120 +227,6 @@
       "panels": [
         {
           "aliasColors": {},
-          "cacheTimeout": null,
-          "combine": {
-            "label": "Others",
-            "threshold": 0
-          },
-          "datasource": "PostgreSQL",
-          "fontSize": "80%",
-          "format": "short",
-          "id": 4,
-          "interval": null,
-          "legend": {
-            "show": true,
-            "values": true
-          },
-          "legendType": "Under graph",
-          "links": [],
-          "maxDataPoints": 3,
-          "nullPointMode": "connected",
-          "pieType": "pie",
-          "span": 12,
-          "strokeWidth": 1,
-          "targets": [
-            {
-              "alias": "",
-              "expr": "SELECT \n  date_trunc('day', time) as time,\n  count(*)\nFROM sdkVersionForClient\n  WHERE $__timeFilter(time)\n  GROUP by time\n  ORDER by time;",
-              "format": "time_series",
-              "hide": false,
-              "intervalFactor": 2,
-              "rawSql": "SELECT\n  $__timeGroup(event_time,'1h') as time,\n  count(clientId),\n  version as metric\nFROM sdkVersionForClient\n  WHERE $__timeFilter(event_time)\n  GROUP by version, time\n  ORDER by version;",
-              "refId": "A"
-            }
-          ],
-          "title": "SDK usage percent for users with last sdk init in time range",
-          "type": "grafana-piechart-panel",
-          "valueName": "current"
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": 250,
-      "panels": [
-        {
-          "columns": [],
-          "datasource": "PostgreSQL",
-          "fontSize": "100%",
-          "id": 5,
-          "links": [],
-          "pageSize": null,
-          "scroll": true,
-          "showHeader": true,
-          "sort": {
-            "col": 0,
-            "desc": true
-          },
-          "span": 12,
-          "styles": [
-            {
-              "alias": "Time",
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "pattern": "Time",
-              "type": "date"
-            },
-            {
-              "alias": "",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "decimals": 2,
-              "pattern": "/.*/",
-              "thresholds": [],
-              "type": "number",
-              "unit": "short"
-            }
-          ],
-          "targets": [
-            {
-              "alias": "",
-              "expr": "SELECT\n  version,\n  count(*)\nFROM sdkVersionForClient\n  GROUP by version\n  ORDER by version;",
-              "format": "table",
-              "hide": false,
-              "intervalFactor": 2,
-              "legendFormat": "",
-              "rawSql": "SELECT\n  version,\n  count(*)\nFROM sdkVersionForClient\n  GROUP by version\n  ORDER by version;",
-              "refId": "A"
-            }
-          ],
-          "title": "SDK client usage - no time range",
-          "transform": "table",
-          "type": "table"
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": 250,
-      "panels": [
-        {
-          "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
@@ -260,7 +260,7 @@
               "alias": "",
               "format": "time_series",
               "hide": false,
-              "rawSql": "SELECT\n  $__timeGroup(event_time,'1m') as time,\n  count(clientId),\n  (data->>'button')::text as metric\nFROM mobileAppMetrics\n  WHERE $__timeFilter(event_time) and data ? 'button'\n  GROUP by data->>'button', time\n  ORDER by data->>'button';",
+              "rawSql": "SELECT\n  $__timeGroup(event_time,'1m') as time,\n  count(clientId),\n  (data->>'button')::text as metric\nFROM customMetrics\n  WHERE $__timeFilter(event_time) and data ? 'button'\n  GROUP by data->>'button', time\n  ORDER by data->>'button';",
               "refId": "A"
             }
           ],
@@ -316,8 +316,8 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
-    "to": "now"
+    "from": "2018-02-22T08:38:42.780Z",
+    "to": "2018-02-22T08:53:42.780Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -346,5 +346,5 @@
   },
   "timezone": "",
   "title": "w/ semi structured data",
-  "version": 1
+  "version": 2
 }

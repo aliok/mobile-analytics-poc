@@ -12,8 +12,9 @@ let buttonMetricsCount = 0;     // for logging purposes only
 
 Promise.resolve()
     .then(dbCommons.ping)
-    .then(dbCommons.createSdkVersionForClientTable)
     .then(dbCommons.createMobileAppMetricsTable)
+    .then(dbCommons.createClientKnowledgeBaseView)
+    .then(dbCommons.createCustomMetricsTable)
     .then(startListeningSDKInitEventStream)
     .then(startListeningButtonMetricsStream)
     .catch(function (err) {
