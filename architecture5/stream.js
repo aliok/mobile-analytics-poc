@@ -7,7 +7,7 @@ const Promise = require('bluebird');
 const fixtures = require('./fixtures');
 const promClient = require('prom-client');
 
-const {initEventFixedStream, initEventStream, securityEventStream} = fixtures;
+const {initEventFixedStream, securityEventFixedStream, initEventStream, securityEventStream} = fixtures;
 
 let gateway = new promClient.Pushgateway('http://127.0.0.1:9091');
 
@@ -30,7 +30,7 @@ let securityEventCount = 0;      // for logging purposes only
 
 Promise.resolve()
     .then(startListeningInitEventStream)
-    // .then(startListeningSecurityEventStream)
+    .then(startListeningSecurityEventStream)
     .then(startPushingToGateway)
     .catch(function (err) {
         console.trace("WTF?");
@@ -85,7 +85,7 @@ function startListeningInitEventStream() {
 
 function startListeningSecurityEventStream() {
     console.log("Starting listening security event stream");
-    securityEventStream(function (metrics) {
+    securityEventFixedStream(function (metrics) {
         securityEventCount++;
         if (securityEventCount % LOG_EVERY_Nth_EVENT === 1) {
             console.log(`Processing security metrics #${securityEventCount}`);

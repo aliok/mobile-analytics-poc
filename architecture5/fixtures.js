@@ -25,6 +25,7 @@ const SECURITY_EVENT_STREAM_FREQUENCY = 500;   // e.g. every 5 seconds means 60*
 
 module.exports = {
     initEventFixedStream: initEventFixedStream,
+    securityEventFixedStream: securityEventFixedStream,
     initEventStream: initEventStream,
     securityEventStream: securityEventStream,
 };
@@ -59,6 +60,54 @@ function initEventFixedStream(listener) {
 
     console.log("Events pushed are written to .events.json");
     fs.writeFileSync('./.events.json', JSON.stringify(eventsSent));
+
+    return Promise.resolve();
+}
+
+function securityEventFixedStream(listener) {
+    const eventsSent = [];
+
+    const EVENT_COUNT = 5;
+    const MAX_CLIENT_COUNT = 3;
+
+    for (let i = 0; i < EVENT_COUNT; i++) {
+        const platform = PLATFORMS[Math.floor(random() * PLATFORMS.length)];
+
+        const security = [];
+        for (let check of SECURITY_CHECKS) {
+            security.push(
+                {
+                    id: check.id,
+                    name: check.name,
+                    passed: random() < 0.8
+                }
+            );
+        }
+
+        const event = {
+            clientId: CLIENT_IDS[platform][Math.floor(random() * Math.min(CLIENT_IDS[platform].length, MAX_CLIENT_COUNT))],
+            type: "security",
+            data: {
+                app: {
+                    appId: APP_IDS[Math.floor(random() * APP_IDS.length)],
+                    sdkVersion: SDK_VERSIONS[Math.floor(random() * SDK_VERSIONS.length)],
+                    appVersion: APP_VERSIONS[platform][Math.floor(random() * APP_VERSIONS[platform].length)],
+                    framework: FRAMEWORKS[Math.floor(random() * FRAMEWORKS.length)],
+                },
+                device: {
+                    platform: platform,
+                    platformVersion: PLATFORM_VERSIONS[platform][Math.floor(random() * PLATFORM_VERSIONS[platform].length)]
+                },
+                security: security
+            }
+        };
+
+        eventsSent.push(event);
+        listener(event);
+    }
+
+    console.log("Events pushed are written to .securityEvents.json");
+    fs.writeFileSync('./.securityEvents.json', JSON.stringify(eventsSent));
 
     return Promise.resolve();
 }
